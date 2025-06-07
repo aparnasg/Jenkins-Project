@@ -1,36 +1,31 @@
+
 pipeline {
-    
     agent any 
-    
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
-    
     stages {
-        
         stage('Checkout'){
-           steps {
+            steps {
                 git credentialsId: 'f87a34a8-0e09-45e7-b9cf-6dc68feac670', 
                 url: 'https://github.com/aparnasg/Jenkins-Project.git',
                 branch: 'main'
-           }
+            }
         }
-
         stage('Build Docker'){
             steps{
                 dir('python-jenkins-argocd-k8s'){
-                script{
-                    sh '''
-                    echo 'Build Docker Image'
-                    docker build --no-cache -t abhishekf5/cicd-e2e:${BUILD_NUMBER} .
-                    '''
+                    script{
+                        sh '''
+                        echo 'Build Docker Image'
+                        docker build --no-cache -t abhishekf5/cicd-e2e:${BUILD_NUMBER} .
+                        '''
+                    }
                 }
             }
         }
-     }     
-
         stage('Push the artifacts'){
-           steps{
+            steps{
                 script{
                     sh '''
                     echo 'Push to Repo'
@@ -39,7 +34,6 @@ pipeline {
                 }
             }
         }
-        
         stage('Checkout K8S manifest SCM'){
             steps {
                 git credentialsId: 'f87a34a8-0e09-45e7-b9cf-6dc68feac670', 
@@ -47,7 +41,6 @@ pipeline {
                 branch: 'main'
             }
         }
-        
         stage('Update K8S manifest & push to Repo'){
             steps {
                 script{
