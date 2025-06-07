@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.10
 # Add this line to install distutils
 RUN apt-get update && apt-get install -y python3-distutils
 
