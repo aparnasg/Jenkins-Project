@@ -18,7 +18,7 @@ pipeline {
                     script{
                         sh '''
                         echo 'Build Docker Image'
-                        docker build --no-cache -t abhishekf5/cicd-e2e:${BUILD_NUMBER} .
+                        docker build --no-cache -t Jenkins_Dockerhub/cicd-e2e:${BUILD_NUMBER} .
                         '''
                     }
                 }
@@ -26,11 +26,17 @@ pipeline {
         }
         stage('Push the artifacts'){
             steps{
-                script{
-                    sh '''
-                    echo 'Push to Repo'
-                    docker push abhishekf5/cicd-e2e:${BUILD_NUMBER}
-                    '''
+                dir('python-jenkins-argocd-k8s'){
+                    script{
+                        withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDS', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PWD')]) {
+                            sh '''
+                            echo "Logging in to Docker Hub..."
+                            echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin
+                            echo "Pushing to Docker Hub..."
+                            docker push Jenkins_Dockerhub/cicd-e2e:${BUILD_NUMBER}
+                            '''
+                        }
+                    }
                 }
             }
         }
