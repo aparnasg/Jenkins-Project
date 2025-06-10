@@ -18,7 +18,7 @@ pipeline {
                     script{
                         sh '''
                         echo 'Build Docker Image'
-                        docker build --no-cache -t jenkins_dockerhub/cicd-e2e:${BUILD_NUMBER} .
+                        docker build --no-cache -t aparnasg703/cicd-e2e:${BUILD_NUMBER} .
                         '''
                     }
                 }
